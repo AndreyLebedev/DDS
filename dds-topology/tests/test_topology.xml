@@ -1,29 +1,25 @@
-<topology name="testProject">
+<topology name="testProject" default="collection_1">
     <description>
         Description of the topology.
     </description>
-	
-  <property name="src" location="src"/>
-  <property name="build" location="build"/>
-  <property name="dist"  location="dist"/>
+  	  
+  <collection name="collection_1">
+    <task name="task1_1" exec="app_1">
+	</task>
+
+    <task name="task_2" depends="task_1" exec="app_2">
+    </task>
+
+    <task name="task_3" depends="task_2" exec="app_3">
+    </taskt>
+
+    <task name="task_4" depends="task_1" exec="app_4">
+    </task>
+  </collection>
   
-  <taskFamily name="family_1" />
-  <taskFamily name="family_2" />
-	  
-
-  <target name="exec_1" exec="app_1">
-
-  </target>
-
-  <target name="exec_2" depends="exec_1" exec="app_2">
-
-  </target>
-
-  <target name="exec_3" depends="exec_2" exec="app_3">
-
-  </target>
-
-  <target name="exec_4" depends="exec_1" exec="app_4">
-	  
-  </target>
+  <collection name="collection_2" depends="collection_1">
+    <task name="task_1" exec="app_5">
+	</task>
+  </collection>
+  
 </topology>
