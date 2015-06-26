@@ -1,0 +1,25 @@
+BEGIN TRANSACTION;
+CREATE TABLE Agents (
+   id INTEGER NOT NULL PRIMARY KEY,
+   port INTEGER,
+   pid INTEGER,
+   submit_time INTEGER,
+   user_name TEXT,
+   version TEXT,
+   dds_path TEXT,
+   startup_time INTEGER,
+   state INTEGER
+);
+CREATE TABLE Hosts (
+   id INTEGER NOT NULL PRIMARY KEY,
+   name TEXT
+);
+CREATE TABLE AgentHostLink
+(
+   id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+   agent_id INTEGER,
+   host_id INTEGER,
+   FOREIGN KEY(agent_id) REFERENCES Agents(id),
+   FOREIGN KEY(host_id) REFERENCES Hosts(id)
+);
+COMMIT;

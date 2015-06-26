@@ -22,6 +22,7 @@ set( SOURCE_FILES
 	./src/AgentChannel.cpp
     ./src/UIChannelInfo.cpp
     ./src/SSHScheduler.cpp
+	./src/CommanderDB.cpp
 )
 
 #
@@ -33,12 +34,14 @@ set( HEADER_FILES
 	./src/AgentChannel.h
     ./src/UIChannelInfo.h
     ./src/SSHScheduler.h
+	./src/CommanderDB.h
 )
 
 include_directories(
 	${dds-commander_BINARY_DIR}
 	${MiscCommon_LOCATION}
-	${Boost_INCLUDE_DIRS} 
+	${Boost_INCLUDE_DIRS}
+    ${SQLITE3_INCLUDE_DIRS}
 )
 
 #
@@ -61,6 +64,7 @@ target_link_libraries (
 	${Boost_LOG_SETUP_LIBRARY}
 	${Boost_THREAD_LIBRARY}
 	${Boost_FILESYSTEM_LIBRARY}
+    ${SQLITE3_LIBRARIES}
 )
 
 target_include_directories(dds-commander

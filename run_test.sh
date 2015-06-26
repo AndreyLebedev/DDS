@@ -79,7 +79,7 @@ echo "----------------------"
 echo "Commander UNIT-TESTs"
 echo "----------------------"
 exec_test "dds-scheduler-tests" "--catch_system_errors=no"
-
+exec_test "dds-commander-db-tests" "--catch_system_errors=no"
 
 popd
 

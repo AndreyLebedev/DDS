@@ -309,3 +309,12 @@ pid_t CUserDefaults::getScoutPid() const
     f >> nDDSScoutPid;
     return nDDSScoutPid;
 }
+
+string CUserDefaults::getDatabaseFile() const
+{
+    const string sFileName("dds-commander.sqlite");
+    string sWrkDir(getValueForKey("server.work_dir"));
+    smart_path(&sWrkDir);
+    smart_append(&sWrkDir, '/');
+    return (sWrkDir + sFileName);
+}

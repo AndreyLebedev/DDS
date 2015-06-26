@@ -11,6 +11,7 @@ set(USER_DEFAULTS_CFG_VERSION "0.2")
 # we need cmake v2.8.11+ in order to use target_include_directories
 cmake_minimum_required( VERSION 2.8.11 FATAL_ERROR )
 
+
 # Version
 #
 # take the version string from git and write it to a version file
@@ -93,7 +94,7 @@ set(IS_SET_DDS_INSTALL_PREFIX 1 CACHE INTERNAL "")
 #
 # Where to lookup modules
 #
-set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}; ${CMAKE_SOURCE_DIR}/cmake")
+set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR};${CMAKE_SOURCE_DIR}/cmake")
 #
 # MiscCommon location
 #
@@ -150,6 +151,7 @@ SET(DDS_ETC_FILES
 #
 SET(DDS_SHARE_FILES
      ${CMAKE_SOURCE_DIR}/res/topology.xsd
+     ${CMAKE_SOURCE_DIR}/res/commander_db.schema
 )
 
 #
@@ -170,6 +172,14 @@ find_package(Boost 1.54 REQUIRED COMPONENTS  ${Boost_Components})
 if(Boost_FOUND)
   set(local_boost_version "${Boost_MAJOR_VERSION}.${Boost_MINOR_VERSION}.${Boost_SUBMINOR_VERSION}")
 endif(Boost_FOUND)
+
+#
+# Search for SQLite
+#
+find_package(SQLITE REQUIRED)
+if(SQLITE_FOUND)
+   message(STATUS "SQLITE found")
+endif(SQLITE_FOUND)
 
 # DDS Misc Common
 message(STATUS "Build MiscCommon - YES")

@@ -8,6 +8,7 @@
 #include "Topology.h"
 #include "CommandAttachmentImpl.h"
 #include "CRC.h"
+#include "CommanderDB.h"
 // BOOST
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-register"
