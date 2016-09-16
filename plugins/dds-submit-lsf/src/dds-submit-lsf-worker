@@ -47,7 +47,8 @@ if [ "$RMS_SANDBOX" != "$WORK_DIR" ]; then
 fi
 
 logMsg "Submitting DDS Job on the lsf cluster..."
-JOB_ID=$(qsub -N dds_agent_ $RMS_SANDBOX/job.lsf)
+OUTPUT=" -o $RMS_SANDBOX/%J/std_%I.out -e $RMS_SANDBOX/%J/std_%I.err"
+JOB_ID=$(bsub -J dds_agent_ $OUTPUT $RMS_SANDBOX/job.lsf)
 if (( $? != 0 )) ; then
 	logMsg "Error: Failed to submit lsf job ($?)"
 	exit $?

@@ -36,9 +36,9 @@ namespace fs = boost::filesystem;
 
 //=============================================================================
 // file is located in the DDS server working dir
-const LPCSTR g_pipeName = ".dds_pbs_pipe";
+const LPCSTR g_pipeName = ".dds_lsf_pipe";
 // file is located in the RMS sandbox directory
-const LPCSTR g_jobIDFile = ".dds_pbs_jobid";
+const LPCSTR g_jobIDFile = ".dds_lsf_jobid";
 //=============================================================================
 
 // Command line parser
@@ -108,9 +108,9 @@ int main(int argc, char* argv[])
             {
                 // location of the plug-in files
                 fs::path pathPluginDir(vm["path"].as<string>());
-                // Generate PBS job script
+                // Generate lsf job script
                 fs::path pathJobScriptSourceFilepath(pathPluginDir);
-                pathJobScriptSourceFilepath /= "job.pbs.in";
+                pathJobScriptSourceFilepath /= "job.lsf.in";
                 // Checxk that the source of the script exists
                 if (!fs::exists(pathJobScriptSourceFilepath))
                     throw runtime_error("Can't find source of the job script. Plug-in's installation is inconsistent.");
@@ -120,11 +120,11 @@ int main(int argc, char* argv[])
                 ssSrcScript << f_src.rdbuf();
                 string sSrcScript(ssSrcScript.str());
 
-                proto.sendMessage(dds::intercom_api::EMsgSeverity::info, "Generating PBS Job script...");
+                proto.sendMessage(dds::intercom_api::EMsgSeverity::info, "Generating lsf Job script...");
                 // Replace #DDS_NEED_ARRAY
                 if (_submit.m_nInstances > 0)
                     boost::replace_all(
-                        sSrcScript, "#DDS_NEED_ARRAY", "#PBS -t=1-" + to_string(_submit.m_nInstances));
+                        sSrcScript, "#DDS_NEED_ARRAY", "#lsf -t=1-" + to_string(_submit.m_nInstances));
 
                 // Replace %DDS_JOB_ROOT_WRK_DIR%
                 std::time_t now = chrono::system_clock::to_time_t(chrono::system_clock::now());
@@ -155,18 +155,18 @@ int main(int argc, char* argv[])
                 // Generate new job script
                 // It is going to be saved in the sandbox dir
                 fs::path pathJobScriptFilepath(sSandboxDir);
-                pathJobScriptFilepath /= "job.pbs";
+                pathJobScriptFilepath /= "job.lsf";
                 fs::ofstream f_dest(pathJobScriptFilepath);
                 f_dest << sSrcScript;
                 f_dest.flush();
                 f_dest.close();
 
                 // Execute the submitter script
-                fs::path pathPBSScript(pathPluginDir);
-                pathPBSScript /= "dds-submit-pbs-worker";
+                fs::path pathlsfScript(pathPluginDir);
+                pathlsfScript /= "dds-submit-lsf-worker";
                 stringstream cmd;
                 cmd << "$DDS_LOCATION/bin/dds-daemonize " << pathPluginDir.string()
-                    << " /bin/bash -c \"unset DDS_LOG_LOCATION; " << pathPBSScript.string() << "\"";
+                    << " /bin/bash -c \"unset DDS_LOG_LOCATION; " << pathlsfScript.string() << "\"";
 
                 proto.sendMessage(dds::intercom_api::EMsgSeverity::info, "Preparing job submission...");
                 string output;
