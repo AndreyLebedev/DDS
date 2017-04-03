@@ -33,8 +33,8 @@ namespace dds
             typedef std::multimap<ECmdType, std::unique_ptr<SHandlerHlpFunc>> Listeners_t;
 
           public:
-            template <ECmdType _cmd, typename Func>
-            void registerMessageHandler(Func _handler)
+            template <typename Func>
+            void registerMessageHandler(ECmdType _cmd, Func _handler)
             {
                 std::unique_ptr<SHandlerHlpFunc> func_ptr(new SHandlerHlpBaseFunc<Func>(_handler));
                 m_registeredMessageHandlers.insert(Listeners_t::value_type(_cmd, std::move(func_ptr)));

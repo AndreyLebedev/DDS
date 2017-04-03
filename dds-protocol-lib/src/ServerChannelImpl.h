@@ -71,7 +71,7 @@ namespace dds
                     }
                     return true;
                 };
-                this->template registerMessageHandler<cmdHANDSHAKE>(funcHandshake);
+                this->template registerMessageHandler<>(cmdHANDSHAKE, funcHandshake);
             }
 
             ~CServerChannelImpl<T>()
