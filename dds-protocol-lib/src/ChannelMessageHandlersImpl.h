@@ -6,12 +6,16 @@
 #define DDS_ChannelMessageHandlersImpl_h
 // DDS
 #include "ProtocolCommands.h"
+#include "BaseEventHandlersImpl.h"
 
 namespace dds
 {
     namespace protocol_api
     {
-        /// Helpers for event dispatching
+        
+        typedef CBaseEventHandlersImpl<ECmdType> CChannelMessageHandlersImpl;
+        
+/*        /// Helpers for event dispatching
         struct SHandlerHlpFunc
         {
         };
@@ -61,7 +65,7 @@ namespace dds
 
           private:
             Listeners_t m_registeredMessageHandlers;
-        };
+        };*/
     }
 }
 
