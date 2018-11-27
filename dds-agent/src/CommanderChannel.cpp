@@ -82,28 +82,28 @@ CCommanderChannel::CCommanderChannel(boost::asio::io_service& _service, uint64_t
                         cmd.m_receiverTaskID = receiverTaskID;
                         cmd.m_senderTaskID = taskID;
 
-                        bool localPush(true);
-                        uint64_t channelID(0);
-                        {
-                            std::lock_guard<std::mutex> lock(m_taskIDToChannelIDMapMutex);
-                            auto it = m_taskIDToChannelIDMap.find(receiverTaskID);
-                            localPush = (it != m_taskIDToChannelIDMap.end());
-                            channelID = it->second;
-                        }
-
-                        if (localPush)
-                        {
-                            LOG(debug) << "Push update key via shared memory: cmd=<" << cmd
-                                       << ">; protocolHeaderID=" << _currentMsg->header().m_ID
-                                       << "; channelID=" << channelID;
-                            m_SMFWChannel->pushMsg<cmdUPDATE_KEY>(cmd, _currentMsg->header().m_ID, channelID);
-                        }
-                        else
-                        {
+//                        bool localPush(true);
+//                        uint64_t channelID(0);
+//                        {
+//                            std::lock_guard<std::mutex> lock(m_taskIDToChannelIDMapMutex);
+//                            auto it = m_taskIDToChannelIDMap.find(receiverTaskID);
+//                            localPush = (it != m_taskIDToChannelIDMap.end());
+//                            channelID = it->second;
+//                        }
+//
+//                        if (localPush)
+//                        {
+//                            LOG(debug) << "Push update key via shared memory: cmd=<" << cmd
+//                                       << ">; protocolHeaderID=" << _currentMsg->header().m_ID
+//                                       << "; channelID=" << channelID;
+//                            m_SMFWChannel->pushMsg<cmdUPDATE_KEY>(cmd, _currentMsg->header().m_ID, channelID);
+//                        }
+//                        else
+//                        {
                             LOG(debug) << "Push update key via network channel: <" << cmd
                                        << ">; protocolHeaderID=" << _currentMsg->header().m_ID;
                             this->pushMsg<cmdUPDATE_KEY>(cmd, _currentMsg->header().m_ID);
-                        }
+//                        }
 
                         LOG(debug) << "Property update from agent channel: <" << cmd << ">";
                     }
