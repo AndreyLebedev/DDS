@@ -5,6 +5,12 @@
 #ifndef DDS_BaseEventHandlersImpl_h
 #define DDS_BaseEventHandlersImpl_h
 
+// STD
+#include <memory>
+#include <utility>
+
+// BOOST
+#include <boost/any.hpp>
 #include <boost/signals2/signal.hpp>
 
 #define DDS_BEGIN_EVENT_HANDLERS(eventType)                                                                    \
@@ -50,45 +56,50 @@ namespace dds
             uint64_t m_ID{ 0 };
         };
 
-        /// Helpers for event dispatching
-        struct SHandlerHlpFunc
-        {
-        };
-        template <typename T>
-        struct SHandlerHlpBaseFunc : SHandlerHlpFunc
-        {
-            T m_signal;
-
-            SHandlerHlpBaseFunc()
-                : m_signal()
-            {
-            }
-        };
+        //        /// Helpers for event dispatching
+        //        struct SHandlerHlpFunc
+        //        {
+        //        };
+        //        template <typename T>
+        //        struct SHandlerHlpBaseFunc : SHandlerHlpFunc
+        //        {
+        //            T m_signal;
+        //
+        //            SHandlerHlpBaseFunc()
+        //                : m_signal()
+        //            {
+        //            }
+        //        };
 
         template <typename Event_t>
         class CBaseEventHandlersImpl
         {
           private:
-            typedef std::map<Event_t, std::unique_ptr<SHandlerHlpFunc>> signalsContainer_t;
+            // typedef std::map<Event_t, std::unique_ptr<SHandlerHlpFunc>> signalsContainer_t;
+            using signalsContainer_t = std::map<Event_t, boost::any>;
 
           protected:
             template <Event_t _cmd, typename R, typename... Args>
             void registerHandlerImpl(std::function<R(Args...)> _handler)
             {
-                typedef boost::signals2::signal<R(Args...)> signal_t;
+                using signal_t = boost::signals2::signal<R(Args...)>;
+                using signalPtr_t = std::shared_ptr<signal_t>;
 
                 auto it = m_signals.find(_cmd);
                 if (it == m_signals.end())
                 {
-                    std::unique_ptr<SHandlerHlpBaseFunc<signal_t>> signal(new SHandlerHlpBaseFunc<signal_t>());
-                    signal->m_signal.connect(_handler);
-                    m_signals.insert(std::make_pair(_cmd, std::move(signal)));
+                    // std::unique_ptr<SHandlerHlpBaseFunc<signal_t>> signal(new SHandlerHlpBaseFunc<signal_t>());
+                    // signal->m_signal.connect(_handler);
+                    signalPtr_t signal(std::make_shared<signal_t>());
+                    signal->connect(_handler);
+                    m_signals.insert(std::make_pair<Event_t, boost::any>(_cmd, signal));
                 }
                 else
                 {
-                    SHandlerHlpFunc& f = *it->second;
-                    signal_t& signal = static_cast<SHandlerHlpBaseFunc<signal_t>&>(f).m_signal;
-                    signal.connect(_handler);
+                    auto signal = boost::any_cast<signalPtr_t>(it->second);
+                    // SHandlerHlpFunc& f = *it->second;
+                    // signal_t& signal = static_cast<SHandlerHlpBaseFunc<signal_t>&>(f).m_signal;
+                    signal->connect(_handler);
                 }
             }
 
@@ -96,13 +107,16 @@ namespace dds
             template <class... Args>
             void dispatchHandlersImpl(Event_t _cmd, const SSenderInfo& _sender, Args&&... args)
             {
-                typedef boost::signals2::signal<void(const SSenderInfo&, Args...)> signal_t;
+                using signal_t = boost::signals2::signal<void(const SSenderInfo&, Args...)>;
+                using signalPtr_t = std::shared_ptr<signal_t>;
+
                 auto it = m_signals.find(_cmd);
                 if (it != m_signals.end())
                 {
-                    const SHandlerHlpFunc& f = *it->second;
-                    const signal_t& signal = static_cast<const SHandlerHlpBaseFunc<signal_t>&>(f).m_signal;
-                    signal(_sender, std::forward<Args>(args)...);
+                    auto signal = boost::any_cast<signalPtr_t>(it->second);
+                    // const SHandlerHlpFunc& f = *it->second;
+                    // const signal_t& signal = static_cast<const SHandlerHlpBaseFunc<signal_t>&>(f).m_signal;
+                    (*signal.get())(_sender, std::forward<Args>(args)...);
                 }
             }
 

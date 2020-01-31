@@ -9,13 +9,11 @@ set(SOURCE_FILES
 	src/Intercom.cpp
 	src/dds_rms_plugin_protocol.cpp
 	src/IntercomServiceCore.cpp
-	src/SMAgentChannel.cpp
     src/AgentChannel.cpp
 )
 
 set(SRC_HDRS_INT
 	src/IntercomServiceCore.h
-	src/SMAgentChannel.h
     src/AgentChannel.h
 )
 

@@ -131,6 +131,27 @@
         }                                                                                                              \
     }
 
+// Dispatch all handlers
+#define SM_MESSAGE_HANDLER_DISPATCH_ALL(theClass)                                         \
+  public:                                                                                 \
+    friend protocol_api::CBaseSMChannelImpl<theClass>;                                    \
+    void processMessage(protocol_api::CProtocolMessage::protocolMessagePtr_t _currentMsg) \
+    {                                                                                     \
+        if (!m_started)                                                                   \
+            return;                                                                       \
+                                                                                          \
+        using namespace dds;                                                              \
+        using namespace dds::protocol_api;                                                \
+        try                                                                               \
+        {                                                                                 \
+            dispatchHandlers(_currentMsg);                                                \
+        }                                                                                 \
+        catch (std::exception & _e)                                                       \
+        {                                                                                 \
+            LOG(MiscCommon::error) << "SMChannel processMessage: " << _e.what();          \
+        }                                                                                 \
+    }
+
 namespace dds
 {
     namespace protocol_api

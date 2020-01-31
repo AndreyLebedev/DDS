@@ -87,7 +87,7 @@ void CIntercomServiceCore::setupSMChannel()
     std::string outputName = CUserDefaults::instance().getSMLeaderOutputName(slotID);
     // For the user task shared memory names are opposite: input shared memory name has output name and output
     // shared memory name has input name.
-    m_SMChannel = CSMAgentChannel::makeNew(m_io_context, outputName, inputName, 0);
+    m_SMChannel = CBaseSMChannel::makeNew(m_io_context, outputName, inputName, 0);
 
     // Subscribe for cmdUPDATE_KEY from SM channel
     m_SMChannel->registerHandler<cmdUPDATE_KEY>(

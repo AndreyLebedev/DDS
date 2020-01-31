@@ -34,6 +34,7 @@ set(SRC_HDRS
 	src/ProtocolMessage.h
 	src/BaseChannelImpl.h
 	src/BaseSMChannelImpl.h
+        src/BaseSMChannel.h
 	src/ClientChannelImpl.h
 	src/ServerChannelImpl.h
 	src/ChannelEventHandlersImpl.h

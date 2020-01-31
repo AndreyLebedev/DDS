@@ -6,8 +6,8 @@
 #define DDS_INTERCOM_SERVICE_CORE_H
 // DDS
 #include "AgentChannel.h"
+#include "BaseSMChannel.h"
 #include "IntercomErrorCodes.h"
-#include "SMAgentChannel.h"
 // STD
 #include <string>
 #include <vector>
@@ -115,11 +115,12 @@ namespace dds
             customCmdSignal_t m_customCmdSignal;               ///< Custom command signal
             customCmdReplySignal_t m_customCmdReplySignal;     ///< Reply on custom command signal
 
-            boost::asio::io_context m_io_context;         ///> boost::asio IO context
-            boost::thread_group m_workerThreads;          ///> Thread container
-            CAgentChannel::connectionPtr_t m_channel;     ///< TCP channel for communication with DDS commander
-            CSMAgentChannel::connectionPtr_t m_SMChannel; ///< Shared memory channel for comunication with DDS agent
-            std::atomic<bool> m_started;                  ///< True if started, False otherwise
+            boost::asio::io_context m_io_context;     ///> boost::asio IO context
+            boost::thread_group m_workerThreads;      ///> Thread container
+            CAgentChannel::connectionPtr_t m_channel; ///< TCP channel for communication with DDS commander
+            dds::protocol_api::CBaseSMChannel::connectionPtr_t
+                m_SMChannel;             ///< Shared memory channel for comunication with DDS agent
+            std::atomic<bool> m_started; ///< True if started, False otherwise
 
             /// Condition variable used to stop the current thread.
             /// Execution continues in three cases:
